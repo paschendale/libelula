@@ -49,6 +49,11 @@ export default function MapSwitcher() {
         alignItems: "center",
         justifyContent: "center",
         boxShadow: "0px 0px 5px -3px rgba(0,0,0,0.25);",
+        "@media (max-width: 768px)": {
+          position: "relative",
+          bottom: "10vh",
+          flexDirection: "row",
+        },
       }}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
