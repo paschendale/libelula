@@ -6,6 +6,7 @@ import {
   useState,
 } from "react";
 import { MapRef } from "react-map-gl";
+import { RMap } from "rlayers";
 
 export interface ViewMetadata {
   latitude: number;
@@ -26,9 +27,9 @@ export interface ViewMetadata {
 }
 
 export const initialView = {
-  longitude: -42.90748652643276,
-  latitude: -20.40436261357887,
-  zoom: 11.181550333109245,
+  longitude: -42.902381859256906,
+  latitude: -20.408986268929297,
+  zoom: 15.939730721816105,
   pitch: 0,
   bearing: 0,
   padding: {
@@ -37,24 +38,27 @@ export const initialView = {
     left: 0,
     right: 0,
   },
-  startEpoch: new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
-  endEpoch: new Date(),
+  startEpoch: new Date("2023-07-09T11:13:32.976Z"),
+  endEpoch: new Date("2024-07-09T11:13:32.976Z"),
   currentMap: "ol",
   possibleMaps: ["mb-bairros", "ol"],
 };
 
 const AppContext = createContext<{
   mapRef: React.MutableRefObject<MapRef | null> | null;
+  olMapRef: React.RefObject<RMap> | null;
   viewMetadata: ViewMetadata;
   setViewMetadata: React.Dispatch<SetStateAction<ViewMetadata>>;
 }>({
   mapRef: null,
+  olMapRef: null,
   viewMetadata: initialView,
   setViewMetadata: () => null,
 });
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const mapRef = useRef<MapRef>(null);
+  const olMapRef = useRef<RMap>(null);
   const [viewMetadata, setViewMetadata] = useState<ViewMetadata>(initialView);
   console.log("🚀 ~ AppProvider ~ viewMetadata:", viewMetadata);
 
@@ -62,6 +66,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     <AppContext.Provider
       value={{
         mapRef,
+        olMapRef,
         viewMetadata,
         setViewMetadata,
       }}
