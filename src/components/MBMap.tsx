@@ -6,21 +6,53 @@ import { setoresCensitarios } from "../assets/setores_censitarios";
 import { useApp } from "../providers/AppProvider";
 import { theme } from "../theme";
 
-export default function MapComponent() {
-  const { mapRef } = useApp();
-  const [viewState, setViewState] = useState({
-    longitude: -42.90748652643276,
-    latitude: -20.40436261357887,
-    zoom: 11.181550333109245,
-    pitch: 0,
-    bearing: 0,
+export default function MBMap() {
+  const { mapRef, viewMetadata, setViewMetadata } = useApp();
+
+  interface MapBoxViewState {
+    longitude: number;
+    latitude: number;
+    zoom: number;
+    pitch: number;
+    bearing: number;
     padding: {
-      top: 0,
-      bottom: 0,
-      left: 0,
-      right: 0,
+      top: number;
+      bottom: number;
+      left: number;
+      right: number;
+    };
+  }
+
+  let viewState: MapBoxViewState = {
+    longitude: viewMetadata.longitude,
+    latitude: viewMetadata.latitude,
+    zoom: viewMetadata.zoom,
+    pitch: viewMetadata.pitch,
+    bearing: viewMetadata.bearing,
+    padding: {
+      top: viewMetadata.padding.top,
+      bottom: viewMetadata.padding.bottom,
+      left: viewMetadata.padding.left,
+      right: viewMetadata.padding.right,
     },
-  });
+  };
+
+  function setViewState(viewState: MapBoxViewState) {
+    setViewMetadata({
+      ...viewMetadata,
+      longitude: viewState.longitude,
+      latitude: viewState.latitude,
+      zoom: viewState.zoom,
+      pitch: viewState.pitch,
+      bearing: viewState.bearing,
+      padding: {
+        top: viewState.padding.top,
+        bottom: viewState.padding.bottom,
+        left: viewState.padding.left,
+        right: viewState.padding.right,
+      },
+    });
+  }
 
   function getColorStops() {
     return [
