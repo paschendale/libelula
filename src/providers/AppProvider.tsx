@@ -24,6 +24,17 @@ export interface ViewMetadata {
   startEpoch: Date;
   endEpoch: Date;
   currentMap: "mb-bairros" | "mb-heatmap" | "mb-3d" | "ol" | string;
+  details?: {
+    id_: number;
+    type_: string;
+    flatCoordinates_: number[];
+    flatInteriorPoints_?: any;
+    flatMidpoints_?: any;
+    ends_: number[];
+    properties_: { [key: string]: any };
+    stride_: number;
+    extent_: number[];
+  };
 }
 
 export const initialView = {
@@ -42,6 +53,7 @@ export const initialView = {
   endEpoch: new Date("2024-07-09T11:13:32.976Z"),
   currentMap: "ol",
   possibleMaps: ["mb-bairros", "ol"],
+  details: undefined,
 };
 
 const AppContext = createContext<{

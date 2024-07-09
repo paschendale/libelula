@@ -5,6 +5,7 @@ import Layout from "../Layout";
 import MapSwitcher from "../../components/MapSwitcher";
 import OLMap from "../../components/OLMap";
 import { useApp } from "../../providers/AppProvider";
+import Details from "../../components/Details";
 
 export default function App() {
   const { viewMetadata, setViewMetadata } = useApp();
@@ -41,6 +42,29 @@ export default function App() {
             {viewMetadata?.currentMap === "ol" && <OLMap />}
             <MapSwitcher />
           </Box>
+          {viewMetadata.details && (
+            <Box
+              sx={{
+                borderRadius: "5px 0 0 5px",
+                boxShadow: "-12px 0px 5px -3px rgba(0,0,0,0.25);",
+                width: viewMetadata.details ? "400px" : "0px",
+                maxWidth: "30vw",
+                flex: 1,
+                zIndex: 2,
+                "@media (max-width: 768px)": {
+                  w: "auto",
+                  maxWidth: "100vw",
+                  flex: "none",
+                  flexDirection: "column",
+                  borderTopLeftRadius: "12px",
+                  borderTopRightRadius: "12px",
+                  boxShadow: "0px -10px 5px -3px rgba(0,0,0,0.25);",
+                },
+              }}
+            >
+              <Details />
+            </Box>
+          )}
           <Box
             sx={{
               borderRadius: "5px 0 0 5px",

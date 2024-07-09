@@ -69,6 +69,32 @@ export default function OLMap() {
     }),
   });
 
+  const selectedStyle = new Style({
+    image: new CircleStyle({
+      radius: 10,
+      fill: new Fill({ color: "yellow" }),
+      stroke: new Stroke({ color: "white", width: 3 }),
+      // @ts-expect-error
+      shadow: new Fill({
+        color: "rgba(0, 0, 0, 0.5)",
+        // @ts-expect-error
+        blur: 15,
+        offsetX: 5,
+        offsetY: 5,
+      }),
+    }),
+  });
+
+  function styleFeature(feature: any) {
+    if (feature === viewMetadata.details) {
+      return selectedStyle;
+    } else if (feature === hoveredFeature) {
+      return hoverStyle;
+    } else {
+      return defaultStyle;
+    }
+  }
+
   function handlePointerMove(event: any) {
     const map = event.map;
     map.forEachFeatureAtPixel(event.pixel, function (feature: any) {
@@ -83,6 +109,18 @@ export default function OLMap() {
     }
   }
 
+  function handleClick(event: any) {
+    const map = event.map;
+    map.forEachFeatureAtPixel(event.pixel, function (feature: any) {
+      if (viewMetadata.details !== feature) {
+        setViewMetadata({
+          ...viewMetadata,
+          details: feature,
+        });
+      }
+    });
+  }
+
   return (
     <RMap
       ref={olMapRef}
@@ -92,6 +130,7 @@ export default function OLMap() {
       view={[viewState, setViewState]}
       noDefaultControls
       onPointerMove={handlePointerMove}
+      onClick={handleClick}
     >
       <RLayerTile
         url={"http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}"}
@@ -99,9 +138,7 @@ export default function OLMap() {
       <RLayerVectorTile
         url={"https://tiles.marotta.dev/data.focos/{z}/{x}/{y}.pbf?"}
         format={new MVT()}
-        style={(feature) =>
-          feature === hoveredFeature ? hoverStyle : defaultStyle
-        }
+        style={styleFeature}
       />
     </RMap>
   );
