@@ -1,7 +1,7 @@
 import { keyframes } from "@chakra-ui/react";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useState } from "react";
-import Map, { Layer, Source } from "react-map-gl";
+import Map, { AttributionControl, Layer, Source } from "react-map-gl";
 import { setoresCensitarios } from "../assets/setores_censitarios";
 import { useApp } from "../providers/AppProvider";
 import { theme } from "../theme";

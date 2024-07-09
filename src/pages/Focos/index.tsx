@@ -37,9 +37,9 @@ export default function App() {
               },
             }}
           >
-            <MapSwitcher />
             {viewMetadata?.currentMap === "mb-bairros" && <MBMap />}
             {viewMetadata?.currentMap === "ol" && <OLMap />}
+            <MapSwitcher />
           </Box>
           <Box
             sx={{

@@ -40,6 +40,8 @@ export default function Navbar() {
         flexDirection: "row",
         justifyContent: "space-between",
         width: "100%",
+        background:
+          "linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0) 100%)",
         "@media (max-width: 768px)": {
           justifyContent: "center",
         },

@@ -39,7 +39,8 @@ export const initialView = {
   },
   startEpoch: new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
   endEpoch: new Date(),
-  currentMap: "mb-bairros",
+  currentMap: "ol",
+  possibleMaps: ["mb-bairros", "ol"],
 };
 
 const AppContext = createContext<{
