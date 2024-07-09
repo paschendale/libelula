@@ -60,7 +60,7 @@ export default function Navbar() {
         >
           <Tab onClick={(e) => handleNavigation(e, "/")}>Home</Tab>
           <Tab onClick={(e) => handleNavigation(e, "/focos")}>Focos</Tab>
-          <Tab onClick={(e) => handleNavigation(e, "/casos")}>Casos</Tab>
+          {/* <Tab onClick={(e) => handleNavigation(e, "/casos")}>Casos</Tab> */}
         </TabList>
       </Tabs>
     </Box>
