@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 import Layout from "../Layout";
 import bgOrto from "./../../assets/bg-orto.jpg";
 import droneSVG from "./../../assets/drone.svg";
+import dragonflySVG from "./../../assets/dragonfly.svg";
+import logo from "../../tenancy/logo";
+import { theme } from "../../theme";
+import environment from "../../environment";
 
 const fadeIn = keyframes`
   from { opacity: 0; }
@@ -26,6 +30,7 @@ const moveBackground = keyframes`
 
 export default function Home() {
   const navigate = useNavigate();
+
   return (
     <Layout>
       <Box
@@ -62,7 +67,7 @@ export default function Home() {
               animation: `${fadeIn} 0.3s ease-in`,
             }}
           >
-            Monitore arboviroses em Ponte Nova
+            Monitore arboviroses em {environment.name}
           </Text>
           <Text
             sx={{
@@ -80,9 +85,10 @@ export default function Home() {
           </Text>
 
           <Image
-            src={droneSVG}
+            src={logo()}
             sx={{
               position: "fixed",
+              height: "40%",
               left: "80%",
               transform: "translateX(-50%)",
               zIndex: 2,

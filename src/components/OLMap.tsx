@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import {
   MapBrowserEvent,
   RLayerTile,
@@ -19,7 +19,8 @@ import { Style, Circle as CircleStyle, Fill, Stroke } from "ol/style";
 export default function OLMap() {
   const { olMapRef, viewMetadata, setViewMetadata } = useApp();
   const map = useRef<RMap>(null);
-  const [hoveredFeature, setHoveredFeature] = useState(null);
+  const [hoveredFeature, setHoveredFeature] =
+    useState<typeof viewMetadata.details>();
 
   let viewState = {
     center: fromLonLat([viewMetadata.longitude, viewMetadata.latitude]),
@@ -86,9 +87,9 @@ export default function OLMap() {
   });
 
   function styleFeature(feature: any) {
-    if (feature === viewMetadata.details) {
+    if (feature.id_ === viewMetadata.details?.id_) {
       return selectedStyle;
-    } else if (feature === hoveredFeature) {
+    } else if (feature.id_ === hoveredFeature?.id_) {
       return hoverStyle;
     } else {
       return defaultStyle;
@@ -138,7 +139,10 @@ export default function OLMap() {
       <RLayerVectorTile
         url={"https://tiles.marotta.dev/data.focos/{z}/{x}/{y}.pbf?"}
         format={new MVT()}
-        style={styleFeature}
+        style={useCallback(styleFeature, [
+          hoveredFeature,
+          viewMetadata.details,
+        ])}
       />
     </RMap>
   );
