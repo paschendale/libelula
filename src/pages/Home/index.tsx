@@ -157,7 +157,7 @@ export default function Home() {
               }}
               onClick={() => navigate("/focos")}
             >
-              Acesso SEMSA
+              Acesso restrito
             </Button>
           </Box>
         </Box>

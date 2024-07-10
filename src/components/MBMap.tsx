@@ -1,10 +1,11 @@
 import { keyframes } from "@chakra-ui/react";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Map, { AttributionControl, Layer, Source } from "react-map-gl";
 import { setoresCensitarios } from "../assets/setores_censitarios";
 import { useApp } from "../providers/AppProvider";
 import { theme } from "../theme";
+import environment from "../environment";
 
 export default function MBMap() {
   const { mapRef, viewMetadata, setViewMetadata } = useApp();
@@ -75,6 +76,9 @@ export default function MBMap() {
     to { opacity: 1; }
   `;
 
+  const layers = mapRef?.current?.getStyle().layers;
+  console.log("🚀 ~ MBMap ~ layers:", layers);
+
   return (
     <Map
       reuseMaps
@@ -82,20 +86,21 @@ export default function MBMap() {
       attributionControl={false}
       ref={mapRef}
       onMove={(evt) => setViewState(evt.viewState)}
-      mapboxAccessToken="pk.eyJ1IjoicGFzY2hlbmRhbGUiLCJhIjoiY2x4bG1haThnMDFrMDJrcHpnbThqOGd2diJ9.S9-iSawymgjbPoxSc7gWtg"
+      mapboxAccessToken={environment.mapboxToken}
       style={{
         width: "100%",
         height: "100%",
         animation: `${fadeIn} 0.3s ease-in`,
       }}
-      mapStyle="mapbox://styles/paschendale/clxlmdqkh020k01qm8vsvexzm"
+      mapStyle={environment.mapboxStyle}
     >
       <Source id="setores" type="geojson" data={setoresCensitarios as any}>
         <Layer
           {...{
             id: "setores-fill",
             type: "fill",
-            source: "setores", // reference the data source
+            beforeId: "road-label-simple",
+            source: "setores",
             layout: {},
             paint: {
               "fill-color": [

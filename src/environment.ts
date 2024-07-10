@@ -3,6 +3,7 @@ const environments: {
     key: string;
     name: string;
     url: string;
+    mapboxStyle: string;
     mapboxToken: string;
     pgTilesUrl: string;
     apiUrl: string;
@@ -13,18 +14,8 @@ const environments: {
     key: "portfolio",
     name: "Ponte Nova",
     url: "https://libelula.marotta.dev",
-    mapboxToken:
-      "pk.eyJ1IjoicGFzY2hlbmRhbGUiLCJhIjoiY2x4bG1haThnMDFrMDJrcHpnbThqOGd2diJ9.S9-iSawymgjbPoxSc7gWtg",
-    pgTilesUrl: "https://tiles.marotta.dev/",
-    apiUrl: "https://api-libelula.marotta.dev/",
-    adminUrl: "https://admin-libelula.marotta.dev/",
-  },
-  pontenova: {
-    key: "pontenova",
-    name: "Ponte Nova",
-    url: "https://libelula.marotta.dev",
-    mapboxToken:
-      "pk.eyJ1IjoicGFzY2hlbmRhbGUiLCJhIjoiY2x4bG1haThnMDFrMDJrcHpnbThqOGd2diJ9.S9-iSawymgjbPoxSc7gWtg",
+    mapboxStyle: process.env.REACT_APP_MAPBOX_STYLE!,
+    mapboxToken: process.env.REACT_APP_MAPBOX_TOKEN!,
     pgTilesUrl: "https://tiles.marotta.dev/",
     apiUrl: "https://api-libelula.marotta.dev/",
     adminUrl: "https://admin-libelula.marotta.dev/",

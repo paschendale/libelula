@@ -1,7 +1,14 @@
 services:
   libelula:
     image: paschendale/libelula
-    build: .
+    env_file:
+      - .env
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_MAPBOX_TOKEN: ${MAPBOX_TOKEN}
+        REACT_APP_MAPBOX_STYLE: ${MAPBOX_STYLE}
     restart: always
     ports:
       - "3001:3001"

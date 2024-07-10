@@ -54,6 +54,9 @@ jobs:
         with:
           file: Dockerfile
           push: true
+          build-args: |
+            REACT_APP_MAPBOX_TOKEN=${{ secrets.MAPBOX_TOKEN }}
+            REACT_APP_MAPBOX_STYLE=${{ secrets.MAPBOX_STYLE }}
           tags: |
             ${{ secrets.DOCKERHUB_USER }}/libelula:${{ needs.release.outputs.VERSION }}
             ${{ secrets.DOCKERHUB_USER }}/libelula:${{ github.ref == 'refs/heads/main' && 'latest' || 'nightly' }}
