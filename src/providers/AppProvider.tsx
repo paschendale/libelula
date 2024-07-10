@@ -25,16 +25,16 @@ export interface ViewMetadata {
   endEpoch: Date;
   currentMap: "mb-bairros" | "mb-heatmap" | "mb-3d" | "ol" | string;
   details?: {
-    id_: number;
-    type_: string;
-    flatCoordinates_: number[];
-    flatInteriorPoints_?: any;
-    flatMidpoints_?: any;
-    ends_: number[];
-    properties_: { [key: string]: any };
-    stride_: number;
-    extent_: number[];
-  };
+  type_: string;
+  flatCoordinates_: number[];
+  flatInteriorPoints_?: any;
+  flatMidpoints_?: any;
+  ends_: number[];
+  properties_: any;
+  stride_: number;
+  extent_: number[];
+  ol_uid: string;
+};
 }
 
 export const initialView = {

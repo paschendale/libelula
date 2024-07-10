@@ -5,7 +5,7 @@ const environments: {
     url: string;
     mapboxStyle: string;
     mapboxToken: string;
-    pgTilesUrl: string;
+    vectorTilesApiUrl: string;
     apiUrl: string;
     adminUrl: string;
   };
@@ -16,9 +16,9 @@ const environments: {
     url: "https://libelula.marotta.dev",
     mapboxStyle: process.env.REACT_APP_MAPBOX_STYLE!,
     mapboxToken: process.env.REACT_APP_MAPBOX_TOKEN!,
-    pgTilesUrl: "https://tiles.marotta.dev/",
-    apiUrl: "https://api-libelula.marotta.dev/",
-    adminUrl: "https://admin-libelula.marotta.dev/",
+    vectorTilesApiUrl: "https://tiles.marotta.dev/",
+    apiUrl: "https://api-libelula.marotta.dev",
+    adminUrl: "https://admin-libelula.marotta.dev",
   },
 };
 

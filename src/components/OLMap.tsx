@@ -1,20 +1,17 @@
-import React, { useCallback, useRef, useState } from "react";
-import {
-  MapBrowserEvent,
-  RLayerTile,
-  RLayerVectorTile,
-  RMap,
-  ROSM,
-  RStyle,
-} from "rlayers";
-import { useApp } from "../providers/AppProvider";
-import { RView } from "rlayers/RMap";
 import MVT from "ol/format/MVT";
 import "ol/ol.css";
 import { fromLonLat, toLonLat } from "ol/proj";
-import { RCircle, RFill, RStroke } from "rlayers/style";
+import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
+import { useCallback, useRef, useState } from "react";
+import {
+  RLayerTile,
+  RLayerVectorTile,
+  RMap
+} from "rlayers";
+import { RView } from "rlayers/RMap";
+import environment from "../environment";
+import { useApp } from "../providers/AppProvider";
 import { theme } from "../theme";
-import { Style, Circle as CircleStyle, Fill, Stroke } from "ol/style";
 
 export default function OLMap() {
   const { olMapRef, viewMetadata, setViewMetadata } = useApp();
@@ -87,9 +84,9 @@ export default function OLMap() {
   });
 
   function styleFeature(feature: any) {
-    if (feature.id_ === viewMetadata.details?.id_) {
+    if (feature.properties_.id === viewMetadata.details?.properties_.id) {
       return selectedStyle;
-    } else if (feature.id_ === hoveredFeature?.id_) {
+    } else if (feature.properties_.id === hoveredFeature?.properties_.id) {
       return hoverStyle;
     } else {
       return defaultStyle;
@@ -137,7 +134,7 @@ export default function OLMap() {
         url={"http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}"}
       />
       <RLayerVectorTile
-        url={"https://tiles.marotta.dev/data.focos/{z}/{x}/{y}.pbf?"}
+        url={`${environment.vectorTilesApiUrl}/focos/{z}/{x}/{y}`}
         format={new MVT()}
         style={useCallback(styleFeature, [
           hoveredFeature,
