@@ -1,6 +1,6 @@
 {
   "name": "libelula",
-  "version": "1.0.0-nightly-20240709T142931.1",
+  "version": "1.0.0-nightly-20240710T101148.1",
   "private": true,
   "dependencies": {
     "@chakra-ui/react": "^2.8.2",
