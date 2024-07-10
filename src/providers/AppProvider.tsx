@@ -23,25 +23,25 @@ export interface ViewMetadata {
   };
   startEpoch: Date;
   endEpoch: Date;
-  currentMap: "mb-bairros" | "mb-heatmap" | "mb-3d" | "ol" | string;
+  currentMap: "bairros" | "points" | string;
   details?: {
-  type_: string;
-  flatCoordinates_: number[];
-  flatInteriorPoints_?: any;
-  flatMidpoints_?: any;
-  ends_: number[];
-  properties_: any;
-  stride_: number;
-  extent_: number[];
-  ol_uid: string;
-};
+    type_: string;
+    flatCoordinates_: number[];
+    flatInteriorPoints_?: any;
+    flatMidpoints_?: any;
+    ends_: number[];
+    properties_: any;
+    stride_: number;
+    extent_: number[];
+    ol_uid: string;
+  };
 }
 
 export const initialView = {
-  longitude: -42.902381859256906,
-  latitude: -20.408986268929297,
-  zoom: 15.939730721816105,
-  pitch: 0,
+  longitude: -42.901785361867894,
+  latitude: -20.4100333063066,
+  zoom: 15.131297713270841,
+  pitch: 65,
   bearing: 0,
   padding: {
     top: 0,
@@ -51,9 +51,8 @@ export const initialView = {
   },
   startEpoch: new Date("2023-07-09T11:13:32.976Z"),
   endEpoch: new Date("2024-07-09T11:13:32.976Z"),
-  currentMap: "ol",
-  possibleMaps: ["mb-bairros", "ol"],
-  details: undefined,
+  currentMap: "points",
+  possibleMaps: ["bairros", "points"],
 };
 
 const AppContext = createContext<{

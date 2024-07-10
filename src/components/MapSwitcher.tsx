@@ -27,11 +27,11 @@ export default function MapSwitcher() {
 
   function mapPreview(map: string) {
     switch (map) {
-      case "ol":
+      case "points":
         return <img style={imgSwitcherSx} src={olFocosPreview} />;
-      case "mb-bairros":
+      case "bairros":
         return <img style={imgSwitcherSx} src={mbBairrosPreview} />;
-      case "map3":
+      default:
         return <>Ain't a map</>;
     }
   }

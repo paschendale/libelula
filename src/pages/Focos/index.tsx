@@ -1,11 +1,12 @@
 import { Box, Flex } from "@chakra-ui/react";
 import Dashboard from "../../components/Dashboard";
-import MBMap from "../../components/MBMap";
 import Layout from "../Layout";
 import MapSwitcher from "../../components/MapSwitcher";
 import OLMap from "../../components/OLMap";
 import { useApp } from "../../providers/AppProvider";
 import Details from "../../components/Details";
+import MapFocosBairros from "../../components/Maps/Focos/Bairros";
+import MapFocosPoints from "../../components/Maps/Focos/Points";
 
 export default function App() {
   const { viewMetadata, setViewMetadata } = useApp();
@@ -38,8 +39,8 @@ export default function App() {
               },
             }}
           >
-            {viewMetadata?.currentMap === "mb-bairros" && <MBMap />}
-            {viewMetadata?.currentMap === "ol" && <OLMap />}
+            {viewMetadata?.currentMap === "bairros" && <MapFocosBairros />}
+            {viewMetadata?.currentMap === "points" && <MapFocosPoints />}
             <MapSwitcher />
           </Box>
           {viewMetadata.details && (

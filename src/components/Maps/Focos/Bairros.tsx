@@ -1,13 +1,12 @@
 import { keyframes } from "@chakra-ui/react";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { useEffect, useState } from "react";
-import Map, { AttributionControl, Layer, Source } from "react-map-gl";
-import { setoresCensitarios } from "../assets/setores_censitarios";
-import { useApp } from "../providers/AppProvider";
-import { theme } from "../theme";
-import environment from "../environment";
+import Map, { Layer, Source } from "react-map-gl";
+import { setoresCensitarios } from "../../../assets/setores_censitarios";
+import { useApp } from "../../../providers/AppProvider";
+import { theme } from "../../../theme";
+import environment from "../../../environment";
 
-export default function MBMap() {
+export default function MapFocosBairros() {
   const { mapRef, viewMetadata, setViewMetadata } = useApp();
 
   interface MapBoxViewState {
@@ -114,7 +113,7 @@ export default function MBMap() {
               "fill-outline-color": theme.colors.brand["lightgreen"],
             },
           }}
-        ></Layer>
+        />
       </Source>
     </Map>
   );
