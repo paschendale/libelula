@@ -4,7 +4,7 @@ import { useApp } from "./../providers/AppProvider";
 import environment from "./../environment";
 import { theme } from "./../theme";
 import { setoresCensitarios } from "../assets/setores_censitarios";
-import { useMemo } from "react";
+import { useEffect } from "react";
 
 export default function Maps() {
   const { mapRef, viewMetadata, setViewMetadata } = useApp();
@@ -37,8 +37,14 @@ export default function Maps() {
     },
   };
 
-  // const layers = mapRef?.current?.getStyle().layers;
-  // console.log("🚀 ~ MBMap ~ layers:", layers);
+  useEffect(() => {
+    if (!viewMetadata.extent) {
+      setViewMetadata({
+        ...viewMetadata,
+        extent: mapRef?.current?.getBounds(),
+      });
+    }
+  }, [viewMetadata, mapRef]);
 
   function setViewState(viewState: MapBoxViewState) {
     setViewMetadata({

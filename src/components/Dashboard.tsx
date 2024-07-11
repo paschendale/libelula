@@ -1,9 +1,41 @@
-import { Box, Flex, Stack, Text, keyframes } from "@chakra-ui/react";
+import { Box, Flex, Skeleton, Stack, Text, keyframes } from "@chakra-ui/react";
 import { theme } from "../theme";
 import Chart from "./Chart";
+import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import environment from "../environment";
+import { useApp } from "../providers/AppProvider";
 
 export default function Dashboard() {
+  const { viewMetadata } = useApp();
+
+  const [debouncedViewMetadata, setDebouncedViewMetadata] =
+    useState(viewMetadata);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedViewMetadata(viewMetadata);
+    }, 300);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [viewMetadata]);
+
+  const { isPending, isLoading, error, data } = useQuery({
+    queryKey: [
+      debouncedViewMetadata.extent,
+      debouncedViewMetadata.startEpoch,
+      debouncedViewMetadata.endEpoch,
+    ],
+    queryFn: () =>
+      fetch(
+        `${environment.apiUrl}/stats/${environment.key}/${debouncedViewMetadata.startEpoch}/${debouncedViewMetadata.endEpoch}/${debouncedViewMetadata.extent?._sw.lng}/${debouncedViewMetadata.extent?._sw.lat}/${debouncedViewMetadata.extent?._ne.lng}/${debouncedViewMetadata.extent?._ne.lat}`
+      ).then((res) => res.json()),
+  });
+
   const today = new Date();
+
   function generateRandomData() {
     const data = [];
     const startDate = Date.UTC(
@@ -21,14 +53,11 @@ export default function Dashboard() {
 
     return data;
   }
-
-  const data = generateRandomData();
-
   // Calculate the yearly statistics
   let total = 0;
   let monthlyCases = new Array(12).fill(0);
 
-  data.forEach((point) => {
+  data?.focos.forEach((point: any) => {
     const date = new Date(point[0]);
     const month = date.getUTCMonth();
     total += point[1];
@@ -53,19 +82,7 @@ export default function Dashboard() {
     "Dezembro",
   ];
 
-  const averageCases = total / data.length;
-
-  // Generate dummy data for bairros based on yearly data
-  const bairrosData = [
-    { name: "Bairro A", value: Math.round(total * 0.15) },
-    { name: "Bairro B", value: Math.round(total * 0.08) },
-    { name: "Bairro C", value: Math.round(total * 0.06) },
-    { name: "Bairro D", value: Math.round(total * 0.05) },
-    { name: "Bairro E", value: Math.round(total * 0.04) },
-    { name: "Bairro F", value: Math.round(total * 0.02) },
-    { name: "Bairro G", value: Math.round(total * 0.01) },
-    { name: "Bairro H", value: Math.round(total * 0.59) },
-  ];
+  const averageCases = total / data?.focos.length;
 
   const lineChartOptions = {
     chart: {
@@ -123,7 +140,7 @@ export default function Dashboard() {
     series: [
       {
         name: "Focos acumulados",
-        data: data,
+        data: data?.focos,
         color: theme.colors.brand.lightgreen,
       },
     ],
@@ -167,7 +184,7 @@ export default function Dashboard() {
     series: [
       {
         name: "Focos",
-        data: bairrosData.map((b, i) => ({
+        data: data?.bairros.map((b: any, i: number) => ({
           name: b.name,
           y: b.value,
           color: theme.colors.brand["green" + (i + 1) * 100],
@@ -206,56 +223,66 @@ export default function Dashboard() {
           animation: `${fadeIn} 0.5s ease-in`,
         }}
       >
-        <Text
-          sx={{
-            color: "brand.lightgreen",
-            fontSize: "5xl",
-            fontWeight: "600",
-            lineHeight: "1",
-            animation: `${fadeIn} 0.5s ease-in`,
-          }}
-        >
-          {total} focos identificados
-        </Text>
-        <Text
-          sx={{
-            fontSize: "xs",
-            fontWeight: "100",
-            animation: `${fadeIn} 0.5s ease-in`,
-          }}
-        >
-          entre {monthNames[today.getMonth()]}/{today.getFullYear() - 2000} e{" "}
-          {monthNames[today.getMonth()]}/{today.getFullYear() - 2000}
-        </Text>
-        <Text
-          sx={{
-            fontSize: "xl",
-            fontWeight: "500",
-            animation: `${fadeIn} 0.5s ease-in`,
-          }}
-        >
-          Em média {averageCases.toFixed(2)} focos identificados por dia
-        </Text>
-        <Text
-          sx={{
-            color: "brand.green500",
-            fontSize: "xl",
-            fontWeight: "500",
-            animation: `${fadeIn} 0.5s ease-in`,
-          }}
-        >
-          36,9% de aumento em relação ao mesmo período do ano anterior
-        </Text>
-        <Text
-          sx={{
-            fontSize: "xl",
-            fontWeight: "500",
-            animation: `${fadeIn} 0.5s ease-in`,
-          }}
-        >
-          O mês com maior número de focos foi {monthNames[monthIndex]}, com{" "}
-          {maxCases} focos identificados
-        </Text>
+        <Skeleton isLoaded={!isLoading}>
+          <Text
+            sx={{
+              color: "brand.lightgreen",
+              fontSize: "5xl",
+              fontWeight: "600",
+              lineHeight: "1",
+              animation: `${fadeIn} 0.5s ease-in`,
+            }}
+          >
+            {total} focos identificados
+          </Text>
+        </Skeleton>
+        <Skeleton isLoaded={!isLoading}>
+          <Text
+            sx={{
+              fontSize: "xs",
+              fontWeight: "100",
+              animation: `${fadeIn} 0.5s ease-in`,
+            }}
+          >
+            entre {monthNames[today.getMonth()]}/{today.getFullYear() - 2000} e{" "}
+            {monthNames[today.getMonth()]}/{today.getFullYear() - 2000}
+          </Text>
+        </Skeleton>
+        <Skeleton isLoaded={!isLoading}>
+          <Text
+            sx={{
+              fontSize: "xl",
+              fontWeight: "500",
+              animation: `${fadeIn} 0.5s ease-in`,
+            }}
+          >
+            Em média {averageCases.toFixed(2)} focos identificados por dia
+          </Text>
+        </Skeleton>
+        <Skeleton isLoaded={!isLoading}>
+          <Text
+            sx={{
+              color: "brand.green500",
+              fontSize: "xl",
+              fontWeight: "500",
+              animation: `${fadeIn} 0.5s ease-in`,
+            }}
+          >
+            36,9% de aumento em relação ao mesmo período do ano anterior
+          </Text>
+        </Skeleton>
+        <Skeleton isLoaded={!isLoading}>
+          <Text
+            sx={{
+              fontSize: "xl",
+              fontWeight: "500",
+              animation: `${fadeIn} 0.5s ease-in`,
+            }}
+          >
+            O mês com maior número de focos foi {monthNames[monthIndex]}, com{" "}
+            {maxCases} focos identificados
+          </Text>
+        </Skeleton>
       </Stack>
       <Box
         sx={{
@@ -264,8 +291,12 @@ export default function Dashboard() {
           animation: `${fadeIn} 0.5s ease-in`,
         }}
       >
-        <Chart options={lineChartOptions} />
-        <Chart options={pieChartOptions} />
+        <Skeleton isLoaded={!isLoading} sx={{ margin: 3 }}>
+          <Chart options={lineChartOptions} />
+        </Skeleton>
+        <Skeleton isLoaded={!isLoading} sx={{ margin: 3 }}>
+          <Chart options={pieChartOptions} />
+        </Skeleton>
       </Box>
     </Flex>
   );

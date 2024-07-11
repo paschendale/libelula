@@ -6,19 +6,28 @@ import Casos from "./Casos";
 import Focos from "./Focos";
 import Home from "./Home";
 import { AppProvider } from "../providers/AppProvider";
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 export default function App() {
   return (
     <ChakraProvider theme={theme}>
-      <BrowserRouter>
-        <AppProvider>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/casos" element={<Casos />} />
-            <Route path="/focos" element={<Focos />} />
-          </Routes>
-        </AppProvider>
-      </BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <AppProvider>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/casos" element={<Casos />} />
+              <Route path="/focos" element={<Focos />} />
+            </Routes>
+          </AppProvider>
+        </BrowserRouter>
+      </QueryClientProvider>
     </ChakraProvider>
   );
 }
