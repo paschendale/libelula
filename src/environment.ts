@@ -3,7 +3,7 @@ const environments: {
     key: string;
     name: string;
     url: string;
-    mapboxStyle: string;
+    mapboxStyle: { [key: string]: string };
     mapboxToken: string;
     vectorTilesApiUrl: string;
     apiUrl: string;
@@ -14,9 +14,12 @@ const environments: {
     key: "portfolio",
     name: "Ponte Nova",
     url: "https://libelula.marotta.dev",
-    mapboxStyle: process.env.REACT_APP_MAPBOX_STYLE!,
+    mapboxStyle: {
+      bairros: "mapbox://styles/paschendale/clyg7yap901gc01qod0v76m6p",
+      points: "mapbox://styles/paschendale/clxogcm4302x701qm8mlg7ycx",
+    },
     mapboxToken: process.env.REACT_APP_MAPBOX_TOKEN!,
-    vectorTilesApiUrl: "https://tiles.marotta.dev/",
+    vectorTilesApiUrl: "https://tiles.marotta.dev",
     apiUrl: "https://api-libelula.marotta.dev",
     adminUrl: "https://admin-libelula.marotta.dev",
   },

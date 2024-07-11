@@ -12,7 +12,16 @@ export interface ViewMetadata {
   latitude: number;
   longitude: number;
   zoom: number;
-  extent?: [number, number, number, number];
+  extent?: {
+    _sw: {
+      lng: number;
+      lat: number;
+    };
+    _ne: {
+      lng: number;
+      lat: number;
+    };
+  };
   pitch: number;
   bearing: number;
   padding: {
