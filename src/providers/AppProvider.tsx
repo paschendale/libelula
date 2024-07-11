@@ -6,7 +6,6 @@ import {
   useState,
 } from "react";
 import { MapRef } from "react-map-gl";
-import { RMap } from "rlayers";
 
 export interface ViewMetadata {
   latitude: number;
@@ -66,19 +65,16 @@ export const initialView = {
 
 const AppContext = createContext<{
   mapRef: React.MutableRefObject<MapRef | null> | null;
-  olMapRef: React.RefObject<RMap> | null;
   viewMetadata: ViewMetadata;
   setViewMetadata: React.Dispatch<SetStateAction<ViewMetadata>>;
 }>({
   mapRef: null,
-  olMapRef: null,
   viewMetadata: initialView,
   setViewMetadata: () => null,
 });
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const mapRef = useRef<MapRef>(null);
-  const olMapRef = useRef<RMap>(null);
   const [viewMetadata, setViewMetadata] = useState<ViewMetadata>(initialView);
   console.log("🚀 ~ AppProvider ~ viewMetadata:", viewMetadata);
 
@@ -86,7 +82,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     <AppContext.Provider
       value={{
         mapRef,
-        olMapRef,
         viewMetadata,
         setViewMetadata,
       }}
