@@ -70,7 +70,7 @@ export default function App() {
               width: "400px",
               maxWidth: "30vw",
               flex: 1,
-              zIndex: 2,
+              zIndex: 1000,
               "@media (max-width: 768px)": {
                 w: "auto",
                 maxWidth: "100vw",

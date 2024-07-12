@@ -41,7 +41,7 @@ export default function Navbar() {
         justifyContent: "space-between",
         width: "100%",
         background:
-          "linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0) 100%)",
+          "linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 70%, rgba(0,0,0,0) 100%)",
         "@media (max-width: 768px)": {
           justifyContent: "center",
         },
