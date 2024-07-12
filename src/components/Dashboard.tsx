@@ -5,6 +5,9 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import environment from "../environment";
 import { useApp } from "../providers/AppProvider";
+import { StatsPonteNova } from "../interfaces";
+import { get } from "http";
+import getMonthName from "../utils/getMonthName";
 
 export default function Dashboard() {
   const { viewMetadata } = useApp();
@@ -22,67 +25,19 @@ export default function Dashboard() {
     };
   }, [viewMetadata]);
 
-  const { isPending, isLoading, error, data } = useQuery({
+  const { isPending, isLoading, error, data } = useQuery<StatsPonteNova>({
     queryKey: [
       debouncedViewMetadata.extent,
       debouncedViewMetadata.startEpoch,
       debouncedViewMetadata.endEpoch,
     ],
+    enabled: !!debouncedViewMetadata.extent,
     queryFn: () =>
       fetch(
         `${environment.apiUrl}/stats/${environment.key}/${debouncedViewMetadata.startEpoch}/${debouncedViewMetadata.endEpoch}/${debouncedViewMetadata.extent?._sw.lng}/${debouncedViewMetadata.extent?._sw.lat}/${debouncedViewMetadata.extent?._ne.lng}/${debouncedViewMetadata.extent?._ne.lat}`
-      ).then((res) => res.json()),
+      ).then((res) => res.json())
   });
 
-  const today = new Date();
-
-  function generateRandomData() {
-    const data = [];
-    const startDate = Date.UTC(
-      today.getFullYear() - 1,
-      today.getMonth(),
-      today.getDate()
-    );
-    const oneDay = 24 * 3600 * 1000;
-    let value = 0;
-
-    for (let i = 0; i < 365; i++) {
-      value += Math.round(Math.random() * 1);
-      data.push([startDate + i * oneDay, value]);
-    }
-
-    return data;
-  }
-  // Calculate the yearly statistics
-  let total = 0;
-  let monthlyCases = new Array(12).fill(0);
-
-  data?.focos.forEach((point: any) => {
-    const date = new Date(point[0]);
-    const month = date.getUTCMonth();
-    total += point[1];
-    monthlyCases[month] += point[1];
-  });
-
-  const maxCases = Math.max(...monthlyCases);
-  const monthIndex = monthlyCases.indexOf(maxCases);
-
-  const monthNames = [
-    "Janeiro",
-    "Fevereiro",
-    "Março",
-    "Abril",
-    "Maio",
-    "Junho",
-    "Julho",
-    "Agosto",
-    "Setembro",
-    "Outubro",
-    "Novembro",
-    "Dezembro",
-  ];
-
-  const averageCases = total / data?.focos.length;
 
   const lineChartOptions = {
     chart: {
@@ -97,9 +52,11 @@ export default function Dashboard() {
       },
     },
     subtitle: {
-      text: `entre ${monthNames[today.getMonth()]}/${
-        today.getFullYear() - 2000
-      } e ${monthNames[today.getMonth()]}/${today.getFullYear() - 2000}`,
+      text: `entre ${getMonthName(viewMetadata.startEpoch.getMonth())}/${
+        viewMetadata.startEpoch.getFullYear() - 2000
+      } e ${getMonthName(viewMetadata.endEpoch.getMonth())}/${
+        viewMetadata.endEpoch.getFullYear() - 2000
+      }`,
       style: {
         color: "#FFFFFF",
       },
@@ -233,7 +190,7 @@ export default function Dashboard() {
               animation: `${fadeIn} 0.5s ease-in`,
             }}
           >
-            {total} focos identificados
+            {data?.stats.totalFocos} focos identificados
           </Text>
         </Skeleton>
         <Skeleton isLoaded={!isLoading}>
@@ -244,8 +201,10 @@ export default function Dashboard() {
               animation: `${fadeIn} 0.5s ease-in`,
             }}
           >
-            entre {monthNames[today.getMonth()]}/{today.getFullYear() - 2000} e{" "}
-            {monthNames[today.getMonth()]}/{today.getFullYear() - 2000}
+            entre {getMonthName(viewMetadata.startEpoch.getMonth())}/
+            {viewMetadata.startEpoch.getFullYear() - 2000} e
+            {getMonthName(viewMetadata.endEpoch.getMonth())}/
+            {viewMetadata.endEpoch.getFullYear() - 2000}
           </Text>
         </Skeleton>
         <Skeleton isLoaded={!isLoading}>
@@ -256,7 +215,8 @@ export default function Dashboard() {
               animation: `${fadeIn} 0.5s ease-in`,
             }}
           >
-            Em média {averageCases.toFixed(2)} focos identificados por dia
+            Em média {parseFloat(data?.stats.mediaFocos!).toFixed(2)} focos
+            identificados por dia
           </Text>
         </Skeleton>
         <Skeleton isLoaded={!isLoading}>
@@ -268,7 +228,8 @@ export default function Dashboard() {
               animation: `${fadeIn} 0.5s ease-in`,
             }}
           >
-            36,9% de aumento em relação ao mesmo período do ano anterior
+            {parseFloat(data?.stats.aumentoMesmoPeriodoPerc!).toFixed(2)}% de aumento em
+            relação ao mesmo período do ano anterior
           </Text>
         </Skeleton>
         <Skeleton isLoaded={!isLoading}>
@@ -279,8 +240,9 @@ export default function Dashboard() {
               animation: `${fadeIn} 0.5s ease-in`,
             }}
           >
-            O mês com maior número de focos foi {monthNames[monthIndex]}, com{" "}
-            {maxCases} focos identificados
+            O mês com maior número de focos foi{" "}
+            {getMonthName(parseInt(data?.stats.mesComMaiorNumero!))}, com{" "}
+            {parseInt(data?.stats.mesComMaiorNumeroQtde!)} focos identificados
           </Text>
         </Skeleton>
       </Stack>
@@ -294,9 +256,9 @@ export default function Dashboard() {
         <Skeleton isLoaded={!isLoading} sx={{ margin: 3 }}>
           <Chart options={lineChartOptions} />
         </Skeleton>
-        <Skeleton isLoaded={!isLoading} sx={{ margin: 3 }}>
+        {/* <Skeleton isLoaded={!isLoading} sx={{ margin: 3 }}>
           <Chart options={pieChartOptions} />
-        </Skeleton>
+        </Skeleton> */}
       </Box>
     </Flex>
   );

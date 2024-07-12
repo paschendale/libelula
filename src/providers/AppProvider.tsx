@@ -49,7 +49,7 @@ export const initialView = {
   longitude: -42.901785361867894,
   latitude: -20.4100333063066,
   zoom: 15.131297713270841,
-  pitch: 65,
+  pitch: 0,
   bearing: 0,
   padding: {
     top: 0,
