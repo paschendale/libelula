@@ -54,7 +54,7 @@ export default function Maps() {
       zoom: viewState.zoom,
       pitch: viewState.pitch,
       bearing: viewState.bearing,
-      extent: mapRef?.current?.getBounds(),
+      extent: mapRef?.current?.getBounds() as typeof viewMetadata.extent,
       padding: {
         top: viewState.padding.top,
         bottom: viewState.padding.bottom,
