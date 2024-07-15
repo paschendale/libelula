@@ -41,7 +41,7 @@ export default function Maps() {
     if (!viewMetadata.extent) {
       setViewMetadata({
         ...viewMetadata,
-        extent: mapRef?.current?.getBounds(),
+        extent: mapRef?.current?.getBounds() as typeof viewMetadata.extent,
       });
     }
   }, [viewMetadata, mapRef]);

@@ -131,3 +131,7 @@ dist
 
 # Build output
 build
+
+# Locks
+yarn.lock
+package-lock.json
