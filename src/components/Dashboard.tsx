@@ -175,6 +175,18 @@ export default function Dashboard() {
         backgroundColor: "brand.darkgray",
         overflowY: "auto",
       }}
+      css={{
+        "&::-webkit-scrollbar": {
+          width: "4px",
+        },
+        "&::-webkit-scrollbar-track": {
+          width: "6px",
+        },
+        "&::-webkit-scrollbar-thumb": {
+          background: theme.colors.brand.lightgreen,
+          borderRadius: "24px",
+        },
+      }}
     >
       <Stack
         sx={{
@@ -255,8 +267,6 @@ export default function Dashboard() {
       </Stack>
       <Box
         sx={{
-          overflowY: "auto",
-          height: `100%`,
           animation: `${fadeIn} 0.5s ease-in`,
         }}
       >
