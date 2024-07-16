@@ -228,8 +228,8 @@ export default function Dashboard() {
               animation: `${fadeIn} 0.5s ease-in`,
             }}
           >
-            {parseFloat(data?.stats.aumentoMesmoPeriodoPerc!).toFixed(2)}% de aumento em
-            relação ao mesmo período do ano anterior
+            {parseFloat(data?.stats.aumentoMesmoPeriodoPerc!).toFixed(2)}% de
+            aumento em relação ao mesmo período do ano anterior
           </Text>
         </Skeleton>
         <Skeleton isLoaded={!isLoading}>
@@ -253,7 +253,7 @@ export default function Dashboard() {
           animation: `${fadeIn} 0.5s ease-in`,
         }}
       >
-        <Skeleton isLoaded={!isLoading} sx={{ margin: 3 }}>
+        <Skeleton isLoaded={!isLoading} sx={{ margin: 3, overflowX: "hidden" }}>
           <Chart options={lineChartOptions} />
         </Skeleton>
         {/* <Skeleton isLoaded={!isLoading} sx={{ margin: 3 }}>
