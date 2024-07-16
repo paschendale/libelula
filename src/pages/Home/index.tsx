@@ -64,7 +64,10 @@ export default function Home() {
             >
               <Image
                 src={geodengue}
-                sx={{ height: "70px", zIndex: 2, opacity: 0.8 }}
+                sx={{
+                  width: "80%",
+                  zIndex: 2,
+                }}
               />
             </Box>
           )}

@@ -1,5 +1,7 @@
-import { Box, Tab, TabList, Tabs } from "@chakra-ui/react";
+import { Box, Tab, TabList, Tabs, Image, Divider } from "@chakra-ui/react";
 import { useLocation, useNavigate } from "react-router-dom";
+import logomarca from "../tenancy/logomarca";
+import environment from "../environment";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -38,15 +40,32 @@ export default function Navbar() {
         padding: 2,
         display: "flex",
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: "flex-start",
+        alignItems: "center",
         width: "100%",
         background:
-          "linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 70%, rgba(0,0,0,0) 100%)",
+          location.pathname === "/"
+            ? "#00000000"
+            : "linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 70%, rgba(0,0,0,0) 100%)",
         "@media (max-width: 768px)": {
           justifyContent: "center",
         },
       }}
     >
+      {location.pathname !== "/" && environment.key !== "portfolio" && (
+        <Image
+          src={logomarca()}
+          sx={{
+            height: "25px",
+          }}
+        />
+      )}
+      {location.pathname !== "/" && environment.key !== "portfolio" && (
+        <Divider
+          orientation="vertical"
+          sx={{ height: "30px", marginLeft: "15px", marginRight: "0px" }}
+        />
+      )}
       <Tabs
         index={currentIndex}
         sx={{
