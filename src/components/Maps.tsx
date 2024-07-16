@@ -115,7 +115,7 @@ export default function Maps() {
           id="focos"
           name="focos"
           type="vector"
-          url={`${environment.vectorTilesApiUrl}/focos`}
+          tiles={[`${environment.vectorTilesApiUrl}/focos/{z}/{x}/{y}`]}
         >
           <Layer
             {...{
