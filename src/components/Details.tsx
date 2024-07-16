@@ -59,9 +59,9 @@ export default function Details() {
         }}
       >
         {viewMetadata.details &&
-          Object.keys(viewMetadata.details?.properties_).map((key, i) => (
+          Object.keys(viewMetadata.details?.properties as {[key: string]: any}).map((key, i) => (
             <div key={i}>
-              <strong>{key}</strong>: {viewMetadata.details?.properties_[key]}
+              <strong>{key}</strong>: {viewMetadata.details?.properties![key]}
             </div>
           ))}
       </Box>

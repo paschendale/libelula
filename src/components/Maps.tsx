@@ -4,10 +4,11 @@ import { useApp } from "./../providers/AppProvider";
 import environment from "./../environment";
 import { theme } from "./../theme";
 import { setoresCensitarios } from "../assets/setores_censitarios";
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export default function Maps() {
   const { mapRef, viewMetadata, setViewMetadata } = useApp();
+  const [cursor, setCursor] = useState<string>("");
 
   interface MapBoxViewState {
     longitude: number;
@@ -67,7 +68,45 @@ export default function Maps() {
   }
 
   function handleMapClick(evt: mapboxgl.MapLayerMouseEvent) {
-    console.log("🚀 ~ handleMapClick ~ evt:", evt);
+    let map = mapRef?.current;
+
+    if (!map) return;
+
+    let features = map?.queryRenderedFeatures(evt.point, {
+      layers: ["focos-points"],
+    });
+
+    if (features?.length) {
+      console.log("🚀 ~ handleMapClick ~ features:", features);
+      setViewMetadata({
+        ...viewMetadata,
+        details: features[0],
+      })
+    } 
+
+    evt.originalEvent.preventDefault();
+  }
+
+  function handleMapMouseMouve(evt: mapboxgl.MapLayerMouseEvent) {
+    let map = mapRef?.current;
+
+    if (!map) return
+
+    let features = map?.queryRenderedFeatures(evt.point, {
+      layers: ["focos-points"],
+    })
+
+    if (features?.length) {
+      setCursor("pointer");
+    } else {
+      setCursor("")
+    }
+
+    evt.originalEvent.preventDefault();
+  }
+
+  function handleMapMouseLeave(evt: mapboxgl.MapLayerMouseEvent) {
+    console.log("🚀 ~ handleMapMouseLeave ~ evt:", evt);
     evt.originalEvent.preventDefault();
   }
 
@@ -103,6 +142,13 @@ export default function Maps() {
       onClick={(evt) => {
         return handleMapClick(evt);
       }}
+      onMouseMove={useCallback((evt: mapboxgl.MapLayerMouseEvent) => {
+        return handleMapMouseMouve(evt);
+      }, [])}
+      onMouseLeave={(evt) => {
+        return handleMapMouseLeave(evt);
+      }}
+      cursor={cursor}
       mapboxAccessToken={environment.mapboxToken}
       style={{
         width: "100%",
@@ -125,7 +171,12 @@ export default function Maps() {
               "source-layer": "focos",
               paint: {
                 "circle-color": theme.colors.brand["green400"],
-                "circle-radius": 8,
+                "circle-radius": [
+                  "case",
+                  ["boolean", ["feature-state", "hover"], false],
+                  10,
+                  8,
+                ],
                 "circle-stroke-color": "white",
                 "circle-stroke-width": 3,
               },
