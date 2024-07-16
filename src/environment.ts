@@ -18,7 +18,7 @@ const environments: {
       points: "mapbox://styles/paschendale/clxogcm4302x701qm8mlg7ycx",
     },
     mapboxToken: process.env.REACT_APP_MAPBOX_TOKEN!,
-    vectorTilesApiUrl: "https://tiles.marotta.dev",
+    vectorTilesApiUrl: "https://tiles-libelula.marotta.dev",
     apiUrl: "https://api-libelula.marotta.dev",
   },
   pontenova: {
