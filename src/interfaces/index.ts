@@ -1,6 +1,6 @@
 export interface StatsPonteNova {
   meta: Meta;
-  bairros: Bairro[];
+  setores: Setor[];
   focos: number[][];
   stats: Stats;
 }
@@ -14,7 +14,7 @@ export interface Stats {
   mesComMaiorNumeroQtde: string;
 }
 
-export interface Bairro {
+export interface Setor {
   name: string;
   value: number;
 }
