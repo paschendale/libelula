@@ -25,7 +25,7 @@ export default function Navbar() {
   const currentIndex = getIndexFromPath(currentLocation);
 
   function handleNavigation(
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent> | any,
     destination: string
   ) {
     e.preventDefault();
@@ -57,7 +57,9 @@ export default function Navbar() {
           src={logomarca()}
           sx={{
             height: "25px",
+            cursor: "pointer",
           }}
+          onClick={(e) => handleNavigation(e, "/")}
         />
       )}
       {location.pathname !== "/" && environment.key !== "portfolio" && (
