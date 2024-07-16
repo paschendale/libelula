@@ -31,7 +31,7 @@ const environments: {
     },
     mapboxToken: process.env.REACT_APP_MAPBOX_TOKEN!,
     vectorTilesApiUrl: "https://tiles-libelula-pontenova.gestaoengenharia.dev",
-    apiUrl: "https://tiles-api-pontenova.gestaoengenharia.dev",
+    apiUrl: "https://api-libelula-pontenova.gestaoengenharia.dev",
   },
 };
 
