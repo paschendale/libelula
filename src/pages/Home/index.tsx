@@ -2,10 +2,8 @@ import { Box, Button, Image, Text, keyframes } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import Layout from "../Layout";
 import bgOrto from "./../../assets/bg-orto.jpg";
-import droneSVG from "./../../assets/drone.svg";
-import dragonflySVG from "./../../assets/dragonfly.svg";
 import logo from "../../tenancy/logo";
-import { theme } from "../../theme";
+import geodengue from "./../../assets/geodengue.svg";
 import environment from "../../environment";
 
 const fadeIn = keyframes`
@@ -55,6 +53,21 @@ export default function Home() {
             animation: `${fadeIn} 0.3s ease-in`,
           }}
         >
+          {environment.key !== "portfolio" && (
+            <Box
+              sx={{
+                display: "flex",
+                flexDir: "row",
+                justifyContent: "flex-start",
+                overflow: "hidden",
+              }}
+            >
+              <Image
+                src={geodengue}
+                sx={{ height: "70px", zIndex: 2, opacity: 0.8 }}
+              />
+            </Box>
+          )}
           <Text
             sx={{
               fontSize: "6xl",
