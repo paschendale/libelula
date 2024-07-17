@@ -1,5 +1,11 @@
 import "mapbox-gl/dist/mapbox-gl.css";
-import Map, { Layer, Source } from "react-map-gl";
+import Map, {
+  GeolocateControl,
+  Layer,
+  NavigationControl,
+  ScaleControl,
+  Source,
+} from "react-map-gl";
 import { useApp } from "./../providers/AppProvider";
 import environment from "./../environment";
 import { theme } from "./../theme";
@@ -45,6 +51,10 @@ export default function Maps() {
         extent: mapRef?.current?.getBounds() as typeof viewMetadata.extent,
       });
     }
+
+    if (mapRef?.current) {
+      mapRef?.current.resize();
+    }
   }, [viewMetadata, mapRef]);
 
   function setViewState(viewState: MapBoxViewState) {
@@ -77,12 +87,25 @@ export default function Maps() {
     });
 
     if (features?.length) {
-      console.log("🚀 ~ handleMapClick ~ features:", features);
+      map.flyTo({
+        //@ts-expect-error
+        center: features[0].geometry.coordinates,
+        zoom: 18,
+      });
+      map.setFeatureState(
+        {
+          source: "focos",
+          id: features[0].properties!.id,
+        },
+        {
+          hover: true,
+        }
+      );
       setViewMetadata({
         ...viewMetadata,
         details: features[0],
-      })
-    } 
+      });
+    }
 
     evt.originalEvent.preventDefault();
   }
@@ -90,23 +113,18 @@ export default function Maps() {
   function handleMapMouseMouve(evt: mapboxgl.MapLayerMouseEvent) {
     let map = mapRef?.current;
 
-    if (!map) return
+    if (!map) return;
 
     let features = map?.queryRenderedFeatures(evt.point, {
       layers: ["focos-points"],
-    })
+    });
 
     if (features?.length) {
       setCursor("pointer");
     } else {
-      setCursor("")
+      setCursor("");
     }
 
-    evt.originalEvent.preventDefault();
-  }
-
-  function handleMapMouseLeave(evt: mapboxgl.MapLayerMouseEvent) {
-    console.log("🚀 ~ handleMapMouseLeave ~ evt:", evt);
     evt.originalEvent.preventDefault();
   }
 
@@ -145,9 +163,6 @@ export default function Maps() {
       onMouseMove={useCallback((evt: mapboxgl.MapLayerMouseEvent) => {
         return handleMapMouseMouve(evt);
       }, [])}
-      onMouseLeave={(evt) => {
-        return handleMapMouseLeave(evt);
-      }}
       cursor={cursor}
       mapboxAccessToken={environment.mapboxToken}
       style={{
@@ -156,6 +171,8 @@ export default function Maps() {
       }}
       mapStyle={mapStyle()}
     >
+      <NavigationControl position="bottom-right" />
+      <GeolocateControl position="bottom-right" />
       {viewMetadata.currentMap === "points" && (
         <Source
           id="focos"
@@ -170,13 +187,13 @@ export default function Maps() {
               source: "focos",
               "source-layer": "focos",
               paint: {
-                "circle-color": theme.colors.brand["green400"],
-                "circle-radius": [
+                "circle-color": [
                   "case",
-                  ["boolean", ["feature-state", "hover"], false],
-                  10,
-                  8,
+                  ["boolean", ["feature-state", "hover"], true],
+                  theme.colors.brand["green400"],
+                  "yellow",
                 ],
+                "circle-radius": 8,
                 "circle-stroke-color": "white",
                 "circle-stroke-width": 3,
               },
