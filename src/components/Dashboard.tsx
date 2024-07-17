@@ -9,6 +9,7 @@ import { StatsPonteNova } from "../interfaces";
 import { get } from "http";
 import getMonthName from "../utils/getMonthName";
 import getGreenShades from "../utils/getGreenShades";
+import { fadeIn } from "../utils/animations";
 
 export default function Dashboard() {
   const { viewMetadata } = useApp();
@@ -36,9 +37,8 @@ export default function Dashboard() {
     queryFn: () =>
       fetch(
         `${environment.apiUrl}/stats/${environment.key}/${debouncedViewMetadata.startEpoch}/${debouncedViewMetadata.endEpoch}/${debouncedViewMetadata.extent?._sw.lng}/${debouncedViewMetadata.extent?._sw.lat}/${debouncedViewMetadata.extent?._ne.lng}/${debouncedViewMetadata.extent?._ne.lat}`
-      ).then((res) => res.json())
+      ).then((res) => res.json()),
   });
-
 
   const lineChartOptions = {
     chart: {
@@ -104,7 +104,9 @@ export default function Dashboard() {
     ],
   };
 
-  const greenShades = data?.setores?.filter(e => e.value).map((s) => s.value) && getGreenShades(data?.setores?.filter(e => e.value).map((s) => s.value));
+  const greenShades =
+    data?.setores?.filter((e) => e.value).map((s) => s.value) &&
+    getGreenShades(data?.setores?.filter((e) => e.value).map((s) => s.value));
 
   const pieChartOptions = {
     chart: {
@@ -161,11 +163,6 @@ export default function Dashboard() {
     ],
   };
 
-  const fadeIn = keyframes`
-    from { opacity: 0; }
-    to { opacity: 1; }
-  `;
-
   return (
     <Flex
       sx={{
@@ -178,9 +175,11 @@ export default function Dashboard() {
       css={{
         "&::-webkit-scrollbar": {
           width: "4px",
+          height: "4px",
         },
         "&::-webkit-scrollbar-track": {
           width: "6px",
+          height: "6px",
         },
         "&::-webkit-scrollbar-thumb": {
           background: theme.colors.brand.lightgreen,

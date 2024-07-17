@@ -5,7 +5,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { MapRef } from "react-map-gl";
+import { MapboxGeoJSONFeature, MapRef } from "react-map-gl";
 
 export interface ViewMetadata {
   latitude: number;
@@ -32,17 +32,7 @@ export interface ViewMetadata {
   startEpoch: Date;
   endEpoch: Date;
   currentMap: "bairros" | "points" | string;
-  details?: {
-    type_: string;
-    flatCoordinates_: number[];
-    flatInteriorPoints_?: any;
-    flatMidpoints_?: any;
-    ends_: number[];
-    properties_: any;
-    stride_: number;
-    extent_: number[];
-    ol_uid: string;
-  };
+  details?: MapboxGeoJSONFeature;
 }
 
 export const initialView = {
