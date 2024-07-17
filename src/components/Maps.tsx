@@ -2,6 +2,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import Map, {
   GeolocateControl,
   Layer,
+  MapboxGeoJSONFeature,
   NavigationControl,
   ScaleControl,
   Source,
@@ -103,7 +104,7 @@ export default function Maps() {
       );
       setViewMetadata({
         ...viewMetadata,
-        details: features[0],
+        details: features[0] as MapboxGeoJSONFeature,
       });
     }
 
