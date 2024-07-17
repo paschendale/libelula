@@ -8,6 +8,7 @@ import { useApp } from "../providers/AppProvider";
 import { StatsPonteNova } from "../interfaces";
 import { get } from "http";
 import getMonthName from "../utils/getMonthName";
+import getGreenShades from "../utils/getGreenShades";
 
 export default function Dashboard() {
   const { viewMetadata } = useApp();
@@ -56,7 +57,7 @@ export default function Dashboard() {
         viewMetadata.startEpoch.getFullYear() - 2000
       } e ${getMonthName(viewMetadata.endEpoch.getMonth())}/${
         viewMetadata.endEpoch.getFullYear() - 2000
-      }`,
+      }  na área enquadrada`,
       style: {
         color: "#FFFFFF",
       },
@@ -103,6 +104,8 @@ export default function Dashboard() {
     ],
   };
 
+  const greenShades = data?.setores?.filter(e => e.value).map((s) => s.value) && getGreenShades(data?.setores?.filter(e => e.value).map((s) => s.value));
+
   const pieChartOptions = {
     chart: {
       type: "pie",
@@ -110,13 +113,17 @@ export default function Dashboard() {
       height: 250,
     },
     title: {
-      text: "Focos identificados",
+      text: "Focos identificados por setor censitário",
       style: {
         color: "#FFFFFF",
       },
     },
     subtitle: {
-      text: "por bairro",
+      text: `entre ${getMonthName(viewMetadata.startEpoch.getMonth())}/${
+        viewMetadata.startEpoch.getFullYear() - 2000
+      } e ${getMonthName(viewMetadata.endEpoch.getMonth())}/${
+        viewMetadata.endEpoch.getFullYear() - 2000
+      }  na área enquadrada`,
       style: {
         color: "#FFFFFF",
       },
@@ -141,10 +148,10 @@ export default function Dashboard() {
     series: [
       {
         name: "Focos",
-        data: data?.bairros.map((b: any, i: number) => ({
+        data: data?.setores.map((b: any, i: number) => ({
           name: b.name,
           y: b.value,
-          color: theme.colors.brand["green" + (i + 1) * 100],
+          color: greenShades && greenShades[i],
         })),
         showInLegend: false,
         dataLabels: {
@@ -167,6 +174,18 @@ export default function Dashboard() {
         maxHeight: "100%",
         backgroundColor: "brand.darkgray",
         overflowY: "auto",
+      }}
+      css={{
+        "&::-webkit-scrollbar": {
+          width: "4px",
+        },
+        "&::-webkit-scrollbar-track": {
+          width: "6px",
+        },
+        "&::-webkit-scrollbar-thumb": {
+          background: theme.colors.brand.lightgreen,
+          borderRadius: "24px",
+        },
       }}
     >
       <Stack
@@ -248,17 +267,15 @@ export default function Dashboard() {
       </Stack>
       <Box
         sx={{
-          overflowY: "auto",
-          height: `100%`,
           animation: `${fadeIn} 0.5s ease-in`,
         }}
       >
         <Skeleton isLoaded={!isLoading} sx={{ margin: 3, overflowX: "hidden" }}>
           <Chart options={lineChartOptions} />
         </Skeleton>
-        {/* <Skeleton isLoaded={!isLoading} sx={{ margin: 3 }}>
+        <Skeleton isLoaded={!isLoading} sx={{ margin: 3 }}>
           <Chart options={pieChartOptions} />
-        </Skeleton> */}
+        </Skeleton>
       </Box>
     </Flex>
   );

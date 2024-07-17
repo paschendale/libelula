@@ -29,6 +29,10 @@ export default function Chart(props: { options: any }) {
           alignItems: "center",
           paddingBottom: 3,
           width: "100%",
+          '@media (max-width: 768px)': {
+            flexDirection: "column",
+            alignItems: "center",
+          },
         }}
       >
         <Text
