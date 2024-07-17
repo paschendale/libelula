@@ -36,7 +36,7 @@ export default function Navbar() {
     <Box
       sx={{
         position: "fixed",
-        zIndex: 999,
+        zIndex: 900,
         padding: 2,
         display: "flex",
         flexDirection: "row",
