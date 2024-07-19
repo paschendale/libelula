@@ -313,7 +313,7 @@ export default function Dashboard() {
                 fontWeight: "500",
               }}
             >
-              Focos Acumulados
+              Focos acumulados
             </Text>
             <Text
               sx={{

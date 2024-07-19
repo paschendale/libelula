@@ -12,6 +12,7 @@ import environment from "./../environment";
 import { theme } from "./../theme";
 import { setoresCensitarios } from "../assets/setores_censitarios";
 import { useCallback, useEffect, useState } from "react";
+import formatDateForPgTiles from "../utils/formatDateForPgTiles";
 
 export default function Maps() {
   const { mapRef, viewMetadata, setViewMetadata } = useApp();
@@ -84,7 +85,7 @@ export default function Maps() {
     if (!map) return;
 
     let features = map?.queryRenderedFeatures(evt.point, {
-      layers: ["focos-points"],
+      layers: ["focos_ultimo_ano"],
     });
 
     if (features?.length) {
@@ -93,15 +94,6 @@ export default function Maps() {
         center: features[0].geometry.coordinates,
         zoom: 18,
       });
-      map.setFeatureState(
-        {
-          source: "focos",
-          id: features[0].properties!.id,
-        },
-        {
-          hover: true,
-        }
-      );
       setViewMetadata({
         ...viewMetadata,
         details: features[0] as MapboxGeoJSONFeature,
@@ -117,7 +109,7 @@ export default function Maps() {
     if (!map) return;
 
     let features = map?.queryRenderedFeatures(evt.point, {
-      layers: ["focos-points"],
+      layers: ["focos_ultimo_ano"],
     });
 
     if (features?.length) {
@@ -179,24 +171,36 @@ export default function Maps() {
           id="focos"
           name="focos"
           type="vector"
-          tiles={[`${environment.vectorTilesApiUrl}/focos/{z}/{x}/{y}`]}
+          tiles={[
+            `${environment.vectorTilesApiUrl}/focos_ultimo_ano/{z}/{x}/{y}`,
+          ]}
         >
           <Layer
             {...{
-              id: "focos-points",
+              id: "focos_ultimo_ano",
               type: "circle",
               source: "focos",
-              "source-layer": "focos",
+              "source-layer": "focos_ultimo_ano",
               paint: {
-                "circle-color": [
-                  "case",
-                  ["boolean", ["feature-state", "hover"], true],
-                  theme.colors.brand["green400"],
-                  "yellow",
-                ],
-                "circle-radius": 8,
+                "circle-color": theme.colors.brand["green400"],
+                "circle-radius": 5,
                 "circle-stroke-color": "white",
-                "circle-stroke-width": 3,
+                "circle-stroke-width": 2,
+              },
+            }}
+          />
+          <Layer
+            {...{
+              id: "focos_ultimo_ano-shadow",
+              type: "circle",
+              source: "focos",
+              beforeId: "focos_ultimo_ano",
+              "source-layer": "focos_ultimo_ano",
+              paint: {
+                "circle-color": "#000",
+                "circle-opacity": 0.8,
+                "circle-radius": 10,
+                "circle-blur": 0.7,
               },
             }}
           />
