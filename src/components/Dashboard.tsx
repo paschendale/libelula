@@ -1,4 +1,12 @@
-import { Box, Flex, Skeleton, Stack, Text, keyframes } from "@chakra-ui/react";
+import {
+  Box,
+  Divider,
+  Flex,
+  Skeleton,
+  Stack,
+  Text,
+  keyframes,
+} from "@chakra-ui/react";
 import { theme } from "../theme";
 import Chart from "./Chart";
 import { useEffect, useState } from "react";
@@ -6,7 +14,6 @@ import { useQuery } from "@tanstack/react-query";
 import environment from "../environment";
 import { useApp } from "../providers/AppProvider";
 import { StatsPonteNova } from "../interfaces";
-import { get } from "http";
 import getMonthName from "../utils/getMonthName";
 import getGreenShades from "../utils/getGreenShades";
 import { fadeIn } from "../utils/animations";
@@ -16,6 +23,9 @@ export default function Dashboard() {
 
   const [debouncedViewMetadata, setDebouncedViewMetadata] =
     useState(viewMetadata);
+  const [chartData, setChartData] = useState<StatsPonteNova | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -37,30 +47,17 @@ export default function Dashboard() {
     queryFn: () =>
       fetch(
         `${environment.apiUrl}/stats/${environment.key}/${debouncedViewMetadata.startEpoch}/${debouncedViewMetadata.endEpoch}/${debouncedViewMetadata.extent?._sw.lng}/${debouncedViewMetadata.extent?._sw.lat}/${debouncedViewMetadata.extent?._ne.lng}/${debouncedViewMetadata.extent?._ne.lat}`
-      ).then((res) => res.json()),
+      ).then(async (res) => {
+        setChartData(await res.json());
+        return res.json();
+      }),
   });
 
-  const lineChartOptions = {
+  const chart1Options = {
     chart: {
       type: "line",
       backgroundColor: theme.colors.brand.darkgray,
       height: 220,
-    },
-    title: {
-      text: "Focos acumulados",
-      style: {
-        color: "#FFFFFF",
-      },
-    },
-    subtitle: {
-      text: `entre ${getMonthName(viewMetadata.startEpoch.getMonth())}/${
-        viewMetadata.startEpoch.getFullYear() - 2000
-      } e ${getMonthName(viewMetadata.endEpoch.getMonth())}/${
-        viewMetadata.endEpoch.getFullYear() - 2000
-      }  na área enquadrada`,
-      style: {
-        color: "#FFFFFF",
-      },
     },
     xAxis: {
       type: "datetime",
@@ -97,42 +94,31 @@ export default function Dashboard() {
     },
     series: [
       {
-        name: "Focos acumulados",
-        data: data?.focos,
+        name: "Focos acumulados até o momento",
+        data: chartData?.focos,
         color: theme.colors.brand.lightgreen,
       },
     ],
   };
 
   const greenShades =
-    data?.setores?.filter((e) => e.value).map((s) => s.value) &&
-    getGreenShades(data?.setores?.filter((e) => e.value).map((s) => s.value));
+    chartData?.setores?.filter((e) => e.value).map((s) => s.value) &&
+    getGreenShades(
+      chartData?.setores?.filter((e) => e.value).map((s) => s.value)
+    );
 
-  const pieChartOptions = {
+  const chart2Options = {
     chart: {
-      type: "pie",
+      type: "bar",
       backgroundColor: "#1f1f1f",
       height: 250,
     },
-    title: {
-      text: "Focos identificados por setor censitário",
-      style: {
-        color: "#FFFFFF",
-      },
-    },
-    subtitle: {
-      text: `entre ${getMonthName(viewMetadata.startEpoch.getMonth())}/${
-        viewMetadata.startEpoch.getFullYear() - 2000
-      } e ${getMonthName(viewMetadata.endEpoch.getMonth())}/${
-        viewMetadata.endEpoch.getFullYear() - 2000
-      }  na área enquadrada`,
-      style: {
-        color: "#FFFFFF",
-      },
-    },
     plotOptions: {
-      pie: {
-        innerSize: "50%",
+      series: {
+        pointPadding: 0.03,
+        groupPadding: 0.03,
+      },
+      bar: {
         dataLabels: {
           enabled: true,
           style: {
@@ -147,15 +133,48 @@ export default function Dashboard() {
         color: "#000000",
       },
     },
+    legend: {
+      enabled: true,
+      labelFormatter: function () {
+        return "Focos acumulados";
+      },
+
+      itemStyle: {
+        color: "#FFFFFF",
+      },
+    },
+
+    xAxis: {
+      categories: chartData?.setores.map((b: any) => b.name),
+      labels: {
+        style: {
+          color: "#FFFFFF",
+        },
+      },
+      title: {
+        text: null,
+      },
+    },
+    yAxis: {
+      title: {
+        text: null,
+      },
+      labels: {
+        style: {
+          color: "#FFFFFF",
+        },
+      },
+    },
     series: [
       {
         name: "Focos",
-        data: data?.setores.map((b: any, i: number) => ({
+        data: chartData?.setores.map((b: any, i: number) => ({
           name: b.name,
           y: b.value,
-          color: greenShades && greenShades[i],
+          color: theme.colors.brand.lightgreen,
         })),
-        showInLegend: false,
+        color: theme.colors.brand.lightgreen,
+        showInLegend: true,
         dataLabels: {
           format: "{point.y}",
         },
@@ -198,7 +217,7 @@ export default function Dashboard() {
           animation: `${fadeIn} 0.5s ease-in`,
         }}
       >
-        <Skeleton isLoaded={!isLoading}>
+        <Skeleton isLoaded={chartData !== undefined}>
           <Text
             sx={{
               color: "brand.lightgreen",
@@ -208,10 +227,10 @@ export default function Dashboard() {
               animation: `${fadeIn} 0.5s ease-in`,
             }}
           >
-            {data?.stats.totalFocos} focos identificados
+            {chartData?.stats.totalFocos} focos identificados
           </Text>
         </Skeleton>
-        <Skeleton isLoaded={!isLoading}>
+        <Skeleton isLoaded={chartData !== undefined}>
           <Text
             sx={{
               fontSize: "xs",
@@ -225,7 +244,7 @@ export default function Dashboard() {
             {viewMetadata.endEpoch.getFullYear() - 2000}
           </Text>
         </Skeleton>
-        <Skeleton isLoaded={!isLoading}>
+        <Skeleton isLoaded={chartData !== undefined}>
           <Text
             sx={{
               fontSize: "xl",
@@ -233,11 +252,11 @@ export default function Dashboard() {
               animation: `${fadeIn} 0.5s ease-in`,
             }}
           >
-            Em média {parseFloat(data?.stats.mediaFocos!).toFixed(2)} focos
+            Em média {parseFloat(chartData?.stats.mediaFocos!).toFixed(2)} focos
             identificados por dia
           </Text>
         </Skeleton>
-        <Skeleton isLoaded={!isLoading}>
+        <Skeleton isLoaded={chartData !== undefined}>
           <Text
             sx={{
               color: "brand.green500",
@@ -246,11 +265,11 @@ export default function Dashboard() {
               animation: `${fadeIn} 0.5s ease-in`,
             }}
           >
-            {parseFloat(data?.stats.aumentoMesmoPeriodoPerc!).toFixed(2)}% de
-            aumento em relação ao mesmo período do ano anterior
+            {parseFloat(chartData?.stats.aumentoMesmoPeriodoPerc!).toFixed(2)}%
+            de aumento em relação ao mesmo período do ano anterior
           </Text>
         </Skeleton>
-        <Skeleton isLoaded={!isLoading}>
+        <Skeleton isLoaded={chartData !== undefined}>
           <Text
             sx={{
               fontSize: "xl",
@@ -259,21 +278,96 @@ export default function Dashboard() {
             }}
           >
             O mês com maior número de focos foi{" "}
-            {getMonthName(parseInt(data?.stats.mesComMaiorNumero!))}, com{" "}
-            {parseInt(data?.stats.mesComMaiorNumeroQtde!)} focos identificados
+            {getMonthName(parseInt(chartData?.stats.mesComMaiorNumero!))}, com{" "}
+            {parseInt(chartData?.stats.mesComMaiorNumeroQtde!)} focos
+            identificados
           </Text>
         </Skeleton>
       </Stack>
+      <Divider />
       <Box
         sx={{
           animation: `${fadeIn} 0.5s ease-in`,
         }}
       >
-        <Skeleton isLoaded={!isLoading} sx={{ margin: 3, overflowX: "hidden" }}>
-          <Chart options={lineChartOptions} />
+        <Skeleton
+          isLoaded={chartData !== undefined}
+          sx={{ margin: 3, overflowX: "hidden" }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flexDir: "column",
+              alignItems: "flex-start",
+              paddingBottom: 3,
+              width: "100%",
+              "@media (max-width: 768px)": {
+                flexDirection: "column",
+                alignItems: "center",
+              },
+            }}
+          >
+            <Text
+              sx={{
+                fontSize: "xl",
+                fontWeight: "500",
+              }}
+            >
+              Focos Acumulados
+            </Text>
+            <Text
+              sx={{
+                fontSize: "xs",
+              }}
+            >
+              na área enquadrada entre{" "}
+              {getMonthName(viewMetadata.startEpoch.getMonth())}/
+              {viewMetadata.startEpoch.getFullYear() - 2000} e{" "}
+              {getMonthName(viewMetadata.endEpoch.getMonth())}/
+              {viewMetadata.endEpoch.getFullYear() - 2000}
+            </Text>
+          </Box>
+          <Chart options={chart1Options} />
         </Skeleton>
-        <Skeleton isLoaded={!isLoading} sx={{ margin: 3 }}>
-          <Chart options={pieChartOptions} />
+        <Divider />
+        <Skeleton
+          isLoaded={chartData !== undefined}
+          sx={{ margin: 3, overflowX: "hidden" }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flexDir: "column",
+              alignItems: "flex-start",
+              paddingBottom: 3,
+              width: "100%",
+              "@media (max-width: 768px)": {
+                flexDirection: "column",
+                alignItems: "center",
+              },
+            }}
+          >
+            <Text
+              sx={{
+                fontSize: "xl",
+                fontWeight: "500",
+              }}
+            >
+              Focos identificados por território
+            </Text>
+            <Text
+              sx={{
+                fontSize: "xs",
+              }}
+            >
+              na área enquadrada entre{" "}
+              {getMonthName(viewMetadata.startEpoch.getMonth())}/
+              {viewMetadata.startEpoch.getFullYear() - 2000} e{" "}
+              {getMonthName(viewMetadata.endEpoch.getMonth())}/
+              {viewMetadata.endEpoch.getFullYear() - 2000}
+            </Text>
+          </Box>
+          <Chart options={chart2Options} />
         </Skeleton>
       </Box>
     </Flex>
