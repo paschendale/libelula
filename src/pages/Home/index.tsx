@@ -6,9 +6,31 @@ import logo from "../../tenancy/logo";
 import geodengue from "./../../assets/geodengue.svg";
 import environment from "../../environment";
 import { fadeIn, breathe, move, moveBackground } from "../../utils/animations";
+import { useApp } from "../../providers/AppProvider";
 
 export default function Home() {
   const navigate = useNavigate();
+  const { viewMetadata, setViewMetadata } = useApp();
+
+  function handleAcessoCidadao() {
+    setViewMetadata({
+      ...viewMetadata,
+      currentMap: "bairros",
+      zoom: 11,
+      details: undefined,
+    });
+    navigate("/focos");
+  }
+
+  function handleAcessoRestrito() {
+    setViewMetadata({
+      ...viewMetadata,
+      currentMap: "points",
+      zoom: 15,
+      details: undefined,
+    });
+    navigate("/focos");
+  }
 
   return (
     <Layout>
@@ -140,7 +162,7 @@ export default function Home() {
                 marginTop: 2,
                 animation: `${fadeIn} 0.5s ease-in`,
               }}
-              onClick={() => navigate("/focos")}
+              onClick={() => handleAcessoCidadao()}
             >
               Acesso cidadão
             </Button>
@@ -152,7 +174,7 @@ export default function Home() {
                 marginTop: 2,
                 animation: `${fadeIn} 0.5s ease-in`,
               }}
-              onClick={() => navigate("/focos")}
+              onClick={() => handleAcessoRestrito()}
             >
               Acesso restrito
             </Button>
